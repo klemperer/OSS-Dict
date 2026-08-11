@@ -8,6 +8,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive' # 拉取 slobj 等可能存在的子模块代码
     
     - name: set up JDK 17
       uses: actions/setup-java@v4

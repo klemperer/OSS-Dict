@@ -330,8 +330,13 @@ public class ArticleCollectionActivity extends AppCompatActivity
                     if (!AppPrefs.useVolumeKeysForNavigation()) {
                         return false;
                     }
-                    boolean scrolled = webView.pageUp(false);
-                    if (!scrolled) {
+                    boolean canScroll = webView.canScrollVertically(-1);
+                    if (canScroll) {
+                        int overlap = 80;
+                        int scrollDistance = webView.getHeight() - overlap;
+                        if (scrollDistance < 0) scrollDistance = webView.getHeight();
+                        webView.scrollBy(0, -scrollDistance);
+                    } else {
                         int current = viewPager.getCurrentItem();
                         if (current > 0) {
                             viewPager.setCurrentItem(current - 1);
@@ -341,12 +346,18 @@ public class ArticleCollectionActivity extends AppCompatActivity
                     }
                     return true;
                 }
+                
                 if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                     if (!AppPrefs.useVolumeKeysForNavigation()) {
                         return false;
                     }
-                    boolean scrolled = webView.pageDown(false);
-                    if (!scrolled) {
+                    boolean canScroll = webView.canScrollVertically(1);
+                    if (canScroll) {
+                        int overlap = 80;
+                        int scrollDistance = webView.getHeight() - overlap;
+                        if (scrollDistance < 0) scrollDistance = webView.getHeight();
+                        webView.scrollBy(0, scrollDistance);
+                    } else {
                         int current = viewPager.getCurrentItem();
                         if (current < pagerAdapter.getItemCount() - 1) {
                             viewPager.setCurrentItem(current + 1);

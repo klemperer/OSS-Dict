@@ -9,10 +9,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        submodules: 'recursive' # 拉取 slobj 等可能存在的子模块代码
+        submodules: 'recursive'
     
+    # 修复警告：升级到 setup-java@v5
     - name: set up JDK 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -24,8 +25,9 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleDebug 
       
+    # 修复找不到文件：使用通配符全局搜索 APK
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: '**/*.apk'

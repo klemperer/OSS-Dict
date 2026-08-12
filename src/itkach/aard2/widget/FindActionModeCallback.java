@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.os.LocaleList;
 
 import itkach.aard2.R;
 
@@ -35,6 +36,12 @@ class FindActionModeCallback implements ActionMode.Callback, TextWatcher,
         editText.setOnLongClickListener(this);
         editText.setOnClickListener(this);
         editText.addTextChangedListener(this);
+
+        // Hint IME to English when find-in-page is shown
+        try {
+            editText.setImeHintLocales(new LocaleList(new java.util.Locale("en")));
+        } catch (Exception ignored) {
+        }
 
         imManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }

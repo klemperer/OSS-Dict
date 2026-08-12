@@ -641,7 +641,16 @@ public final class StarDictDictionary implements Dictionary {
     @Override @NonNull public String getId()    { return id; }
     @Override @NonNull public String getLabel() {
         String b = tags.get("label");
-        return (b != null && !b.isEmpty()) ? b : shortName(basePath);
+        if (b != null && !b.isEmpty()) {
+            return stripPath(b);
+        }
+        return shortName(basePath);
+    }
+
+    /** Strip leading directory components from a label that may contain a path. */
+    private static String stripPath(@NonNull String label) {
+        int slash = Math.max(label.lastIndexOf('/'), label.lastIndexOf('\\'));
+        return slash >= 0 ? label.substring(slash + 1) : label;
     }
     @Override @NonNull public String getUri() {
         String uri = tags.get("uri");

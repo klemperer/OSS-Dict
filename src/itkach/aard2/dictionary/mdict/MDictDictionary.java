@@ -476,7 +476,16 @@ public final class MDictDictionary implements Dictionary {
     @Override @NonNull public String getId()   { return id; }
     @Override @NonNull public String getLabel() {
         String label = tags.get("label");   // remapped from "title" by parseHeaderXml
-        return (label != null && !label.isEmpty()) ? label : shortName(filePath);
+        if (label != null && !label.isEmpty()) {
+            return stripPath(label);
+        }
+        return shortName(filePath);
+    }
+
+    /** Strip leading directory components from a label that may contain a path. */
+    private static String stripPath(@NonNull String label) {
+        int slash = Math.max(label.lastIndexOf('/'), label.lastIndexOf('\\'));
+        return slash >= 0 ? label.substring(slash + 1) : label;
     }
     @Override @NonNull public String getUri() {
         String uri = tags.get("uri");       // remapped from "website" by parseHeaderXml

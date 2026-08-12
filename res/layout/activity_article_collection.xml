@@ -29,16 +29,16 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/lookup_fab"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/lookup_btn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/action_lookup"
-        app:srcCompat="@drawable/ic_search"
-        app:fabSize="mini"
-        android:alpha="0.75"
-        app:backgroundTint="?attr/colorOnSurface" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="96dp"
+        android:text="@string/action_lookup"
+        android:alpha="0.9"
+        android:contentDescription="@string/action_lookup" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

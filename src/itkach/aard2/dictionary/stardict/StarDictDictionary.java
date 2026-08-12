@@ -38,6 +38,7 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.net.URLDecoder;
 
 import itkach.aard2.dictionary.Dictionary;
 import itkach.aard2.dictionary.DictionaryContent;
@@ -642,6 +643,7 @@ public final class StarDictDictionary implements Dictionary {
     @Override @NonNull public String getLabel() {
         String b = tags.get("label");
         if (b != null && !b.isEmpty()) {
+            try { b = URLDecoder.decode(b, "UTF-8"); } catch (Exception ignored) {}
             return stripPath(b);
         }
         return shortName(basePath);

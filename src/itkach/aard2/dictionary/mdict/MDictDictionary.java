@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.net.URLDecoder;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -477,6 +478,7 @@ public final class MDictDictionary implements Dictionary {
     @Override @NonNull public String getLabel() {
         String label = tags.get("label");   // remapped from "title" by parseHeaderXml
         if (label != null && !label.isEmpty()) {
+            try { label = URLDecoder.decode(label, "UTF-8"); } catch (Exception ignored) {}
             return stripPath(label);
         }
         return shortName(filePath);

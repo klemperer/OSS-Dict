@@ -218,6 +218,12 @@ public class ArticleFragment extends Fragment {
         return webView;
     }
 
+    public void scrollToTop() {
+        if (webView != null) {
+            webView.scrollTo(0, 0);
+        }
+    }
+
     @Override
     public void onDestroy() {
         if (webView != null) {

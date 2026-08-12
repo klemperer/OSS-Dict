@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.List;
 
 import itkach.aard2.Application;
 import itkach.aard2.BaseListFragment;
@@ -218,6 +219,21 @@ public class LookupFragment extends BaseListFragment implements LookupListener, 
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return false;
+        }
+        // If exactly one result, auto-navigate to it
+        LookupResult lookupResult = SlobHelper.getInstance().lastLookupResult;
+        if (lookupResult != null) {
+            List<DictionaryEntry> results = lookupResult.getList();
+            if (results != null && results.size() == 1) {
+                DictionaryEntry entry = results.get(0);
+                Intent intent = new Intent(requireContext(), ArticleCollectionActivity.class);
+                intent.putExtra("position", 0);
+                requireContext().startActivity(intent);
+                return true;
+            }
+        }
         return false;
     }
 

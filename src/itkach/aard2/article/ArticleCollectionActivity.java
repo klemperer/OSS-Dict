@@ -20,6 +20,8 @@ import android.widget.Toast;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -147,6 +149,30 @@ public class ArticleCollectionActivity extends AppCompatActivity
             });
             viewPager.setCurrentItem(position, false);
             updateTitle(position);
+
+            // Lookup button: navigate to MainActivity lookup tab
+            View lookupBtn = findViewById(R.id.lookup_btn);
+            if (lookupBtn != null) {
+                lookupBtn.setOnClickListener(v -> {
+                    Intent lookupIntent = new Intent(this, MainActivity.class);
+                    lookupIntent.setAction(MainActivity.ACTION_LOOKUP);
+                    lookupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(lookupIntent);
+                });
+            }
+
+            // Scroll-to-top button
+            View scrollToTopBtn = findViewById(R.id.scroll_to_top_btn);
+            if (scrollToTopBtn != null) {
+                scrollToTopBtn.setOnClickListener(v -> {
+                    if (viewPager != null) {
+                        ArticleFragment fragment = pagerAdapter.getPrimaryItem();
+                        if (fragment != null) {
+                            fragment.scrollToTop();
+                        }
+                    }
+                });
+            }
 
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.layout), (v, insets) -> {
                 Insets bars = insets.getInsets(

@@ -31,14 +31,28 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/lookup_btn"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="96dp"
-        android:text="@string/action_lookup"
+        android:layout_marginBottom="80dp"
+        app:icon="@drawable/ic_search"
+        app:iconGravity="textStart"
         android:alpha="0.9"
         android:contentDescription="@string/action_lookup" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/scroll_to_top_btn"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/ic_keyboard_arrow_up"
+        app:iconGravity="textStart"
+        android:alpha="0.9"
+        android:contentDescription="@string/scroll_to_top" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

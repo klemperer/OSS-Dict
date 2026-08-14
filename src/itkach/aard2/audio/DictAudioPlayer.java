@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Plays dictionary audio referenced by a SlobServer URL.
@@ -143,8 +145,18 @@ public class DictAudioPlayer {
 
     // ── Standard format playback via MediaPlayer ──────────────────────────────
 
+    /**
+     * Plays audio via {@link MediaPlayer}.
+     *
+     * <p>Uses {@link MediaPlayer#prepareAsync()} + {@code OnCompletionListener}
+     * instead of polling {@code isPlaying()}, because some devices/firmware
+     * return {@code false} from {@code isPlaying()} slightly before the
+     * {@code OnCompletionListener} fires, causing the tail of the audio to
+     * be clipped.</p>
+     */
     private void playUrl(@NonNull String url) throws Exception {
         MediaPlayer mp = new MediaPlayer();
+        final CountDownLatch done = new CountDownLatch(1);
         synchronized (this) { mediaPlayer = mp; }
         try {
             mp.setAudioAttributes(new AudioAttributes.Builder()
@@ -152,16 +164,39 @@ public class DictAudioPlayer {
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build());
             mp.setDataSource(url);
-            mp.prepare(); // blocking; fine on a background thread
-            if (Thread.interrupted()) return;
-            mp.start();
 
-            while (mp.isPlaying()) {
-                if (Thread.interrupted()) { mp.stop(); return; }
-                try { Thread.sleep(50); } catch (InterruptedException e) { mp.stop(); return; }
+            mp.setOnPreparedListener(player -> {
+                Log.d(TAG, "Prepared, starting: " + url);
+                player.start();
+            });
+            mp.setOnCompletionListener(player -> {
+                Log.d(TAG, "Completed: " + url);
+                done.countDown();
+            });
+            mp.setOnErrorListener((player, what, extra) -> {
+                Log.e(TAG, "Error what=" + what + " extra=" + extra + " url=" + url);
+                done.countDown();
+                return true;
+            });
+
+            mp.prepareAsync();
+
+            // Wait for playback to finish, be interrupted, or time out.
+            long deadline = System.currentTimeMillis() + 60_000; // 60 s safety net
+            while (true) {
+                if (Thread.interrupted()) {
+                    try { mp.stop(); } catch (IllegalStateException ignored) {}
+                    return;
+                }
+                long remaining = deadline - System.currentTimeMillis();
+                if (remaining <= 0) {
+                    Log.w(TAG, "Timed out waiting for completion: " + url);
+                    break;
+                }
+                if (done.await(Math.min(100, remaining), TimeUnit.MILLISECONDS)) break;
             }
         } finally {
-            mp.release();
+            try { mp.release(); } catch (IllegalStateException ignored) {}
             synchronized (this) { if (mediaPlayer == mp) mediaPlayer = null; }
         }
     }

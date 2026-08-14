@@ -82,7 +82,7 @@ public class ArticleWebView extends SearchableWebView {
     private final ConnectivityManager connectivityManager;
     private final Timer timer;
     private final TimerTask applyStylePref;
-    private final DictAudioPlayer audioPlayer = new DictAudioPlayer();
+    private final DictAudioPlayer audioPlayer;
 
     private boolean forceLoadRemoteContent;
 
@@ -111,6 +111,7 @@ public class ArticleWebView extends SearchableWebView {
 
     public ArticleWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        audioPlayer = new DictAudioPlayer(context.getApplicationContext());
 
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 

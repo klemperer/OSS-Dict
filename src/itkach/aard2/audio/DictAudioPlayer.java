@@ -188,8 +188,8 @@ public class DictAudioPlayer {
 
             player.setAudioAttributes(
                     new AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_MEDIA)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC)
                             .build(),
                     /* handleAudioFocus= */ false);
 
